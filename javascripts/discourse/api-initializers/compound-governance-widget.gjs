@@ -4288,6 +4288,7 @@ export default apiInitializer((api) => {
     }
   }
 
+
   function renderStatusWidget(proposalData, originalUrl, widgetId, proposalInfo = null) {
     const statusWidgetId = `aave-status-widget-${widgetId}`;
     const proposalType = proposalData.type || 'snapshot'; // 'snapshot' or 'aip'
@@ -6959,8 +6960,12 @@ export default apiInitializer((api) => {
     
     console.log(`🔵 [TOPIC] Found ${allProposals.snapshot.length} Snapshot URL(s) and ${allProposals.aip.length} AIP URL(s) directly in post`);
     
-    // Render widgets immediately if proposals found (temporarily removed condition for testing - always display)
-    // if (allProposals.snapshot.length > 0 || allProposals.aip.length > 0) {
+    // TEMPORARY: Force widget rendering for testing - bypass proposal requirements
+    // Original condition: if (allProposals.snapshot.length > 0 || allProposals.aip.length > 0)
+    // For testing, always render widgets regardless of proposals found
+    const forceRenderForTesting = true;
+    
+    if (forceRenderForTesting || allProposals.snapshot.length > 0 || allProposals.aip.length > 0) {
       // CRITICAL: Check if widgets already exist before rendering - prevent duplicate rendering
       const existingWidgetsBeforeRender = document.querySelectorAll('.tally-status-widget-container');
       if (existingWidgetsBeforeRender.length > 0 && widgetSetupCompleted) {
@@ -6980,7 +6985,7 @@ export default apiInitializer((api) => {
         widgetSetupCompleted = false;
         isWidgetSetupRunning = false;
       }
-    // }
+    }
     
     // CRITICAL: Retry to catch lazy-loaded content for BOTH Snapshot and AIP proposals
     // This ensures proposals are detected on page load, not just when scrolling
@@ -8517,19 +8522,6 @@ export default apiInitializer((api) => {
     // Only clear tracking for URLs that don't have corresponding widgets anymore
     // This prevents re-rendering preserved widgets while allowing new widgets to be created
     
-    // Only clear widgets if there are no proposals at all
-    // hideWidgetIfNoProposal() already preserves AIP widgets, so it's safe to call
-    // Temporarily commented out for testing - always display widget
-    // if (allProposals.snapshot.length === 0 && allProposals.aip.length === 0) {
-      console.log("🔵 [TOPIC] No proposals found - but widget will still display for testing");
-      // hideWidgetIfNoProposal(); // This function already preserves AIP widgets
-      // Still ensure any existing AIP widgets stay visible
-      // ensureAIPWidgetsVisible();
-      // Hide loader since there are no proposals to show
-      // hideMainWidgetLoader();
-      // return;
-    // }
-    
     // CRITICAL: Always ensure existing AIP widgets stay visible
     // This ensures AIP widgets persist even when setupTopicWidgetWithProposals is called multiple times
     ensureAIPWidgetsVisible();
@@ -8806,10 +8798,10 @@ export default apiInitializer((api) => {
               hasValidation: !!snapshot._validation
             });
             
-            // CRITICAL: Only show proposals that have a forum link matching the current forum topic
-            // This prevents false positives when other proposal links are mentioned in discussions
-            // Also filter out proposals without any discourse URL
-            if (!validation.isRelated) {
+            // TEMPORARY: Disable validation for testing - always show widgets
+            const forceShowForTesting = true;
+            
+            if (!forceShowForTesting && !validation.isRelated) {
               if (validation.discussionLink) {
                 console.log(`⚠️ [RENDER] Skipping ${stageName} widget - discussion URL (${validation.discussionLink}) does not match current forum topic`);
               } else {
@@ -9005,15 +8997,10 @@ export default apiInitializer((api) => {
                 hasValidation: !!bestAIP._validation
               });
               
-              // CRITICAL: Only show proposals that have a forum link matching the current forum topic
-              // This prevents false positives when other proposal links are mentioned in discussions
-              // Also filter out proposals without any discourse URL
-              if (!validation.isRelated) {
-                if (validation.discussionLink) {
-                  console.log(`⚠️ [RENDER] Skipping AIP widget - discussion URL (${validation.discussionLink}) does not match current forum topic`);
-                } else {
-                  console.log(`⚠️ [RENDER] Skipping AIP widget - no forum discussion link found in proposal (preventing false positives)`);
-                }
+            // TEMPORARY: Disable validation for testing - always show widgets
+            const forceShowForTesting = true;
+            
+            if (!forceShowForTesting && !validation.isRelated) {
                 return;
               }
               
