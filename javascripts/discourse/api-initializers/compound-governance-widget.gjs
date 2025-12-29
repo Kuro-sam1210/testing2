@@ -6959,8 +6959,8 @@ export default apiInitializer((api) => {
     
     console.log(`🔵 [TOPIC] Found ${allProposals.snapshot.length} Snapshot URL(s) and ${allProposals.aip.length} AIP URL(s) directly in post`);
     
-    // Render widgets immediately if proposals found
-    if (allProposals.snapshot.length > 0 || allProposals.aip.length > 0) {
+    // Render widgets immediately if proposals found (temporarily removed condition for testing - always display)
+    // if (allProposals.snapshot.length > 0 || allProposals.aip.length > 0) {
       // CRITICAL: Check if widgets already exist before rendering - prevent duplicate rendering
       const existingWidgetsBeforeRender = document.querySelectorAll('.tally-status-widget-container');
       if (existingWidgetsBeforeRender.length > 0 && widgetSetupCompleted) {
@@ -6980,7 +6980,7 @@ export default apiInitializer((api) => {
         widgetSetupCompleted = false;
         isWidgetSetupRunning = false;
       }
-    }
+    // }
     
     // CRITICAL: Retry to catch lazy-loaded content for BOTH Snapshot and AIP proposals
     // This ensures proposals are detected on page load, not just when scrolling
@@ -8519,15 +8519,16 @@ export default apiInitializer((api) => {
     
     // Only clear widgets if there are no proposals at all
     // hideWidgetIfNoProposal() already preserves AIP widgets, so it's safe to call
-    if (allProposals.snapshot.length === 0 && allProposals.aip.length === 0) {
-      console.log("🔵 [TOPIC] No proposals found - removing widgets (AIP widgets preserved if any exist)");
-      hideWidgetIfNoProposal(); // This function already preserves AIP widgets
+    // Temporarily commented out for testing - always display widget
+    // if (allProposals.snapshot.length === 0 && allProposals.aip.length === 0) {
+      console.log("🔵 [TOPIC] No proposals found - but widget will still display for testing");
+      // hideWidgetIfNoProposal(); // This function already preserves AIP widgets
       // Still ensure any existing AIP widgets stay visible
-      ensureAIPWidgetsVisible();
+      // ensureAIPWidgetsVisible();
       // Hide loader since there are no proposals to show
-      hideMainWidgetLoader();
-      return;
-    }
+      // hideMainWidgetLoader();
+      // return;
+    // }
     
     // CRITICAL: Always ensure existing AIP widgets stay visible
     // This ensures AIP widgets persist even when setupTopicWidgetWithProposals is called multiple times
